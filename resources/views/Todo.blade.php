@@ -127,11 +127,11 @@
     </form>
     <table>
         <tr>
-            <th></th>
+            <th>Done</th>
             <th>ID</th>
             <th>Todo</th>
             <th>Date</th>
-            <th></th>
+            <th>Operation</th>
         </tr>
         @forelse($todolist as $v)
         <tr data-id="{{ $v['id'] }}">
@@ -146,12 +146,14 @@
                 @if($v['done'])
                 <s>{{$v['todo']}}</s>
                 @else
-                {{$v['todo']}}
+                <span id="todo-text-{{ $v['id'] }}">{{ $v['todo'] }}</span>
+                <input type="text" id="todo-input-{{ $v['id'] }}" value="{{ $v['todo'] }}" style="display: none;">
                 @endif
             </td>
             <td>{{$v['datetime']}}</td>
             <td>
-                <a href="">Update</a>
+                <button onclick="editTodo({{ $v['id'] }})">Edit</button>
+                <button onclick="updateTodo({{ $v['id'] }})" style="display: none;" id="update-btn-{{ $v['id'] }}">Update</button>
                 <a href="/delete/{{$v['id']}}">Delete</a>
             </td>
         </tr>
@@ -202,6 +204,39 @@
         url.searchParams.delete('key'); 
         window.location.href = url.toString();
     }
+
+    function editTodo(id) {
+        document.getElementById(`todo-text-${id}`).style.display = 'none';
+        document.getElementById(`todo-input-${id}`).style.display = 'inline';
+        document.getElementById(`update-btn-${id}`).style.display = 'inline';
+    }
+
+    function updateTodo(id) {
+        const updatedTodo = document.getElementById(`todo-input-${id}`).value;
+
+        fetch(`/todo/${id}/update`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            },
+            body: JSON.stringify({ todo: updatedTodo }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById(`todo-text-${id}`).innerText = updatedTodo;
+                document.getElementById(`todo-text-${id}`).style.display = 'inline';
+                document.getElementById(`todo-input-${id}`).style.display = 'none';
+                document.getElementById(`update-btn-${id}`).style.display = 'none';
+                alert(data.message);
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
     </script>
 </body>
 </html>

@@ -52,5 +52,33 @@ class TodoController extends Controller{
             return back()->with('error', 'Failed to delete the Todo item.');
         }
     }
+
+    public function update(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'todo' => 'required|string|max:255',
+        ]);
+
+        $todo = TodoModel::find($id);
+        if (!$todo) {
+            return redirect('/')->with('error', 'Todo item not found.');
+        }
+
+        $todo->todo = $validatedData['todo'];
+        if ($todo->save()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Todo item updated successfully.',
+            ]);
+        }
+    
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to update Todo item.',
+        ], 500);
+    
+    
+    }
+
     
 }
