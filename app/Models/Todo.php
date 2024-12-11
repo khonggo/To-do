@@ -44,4 +44,14 @@ class Todo extends Model
         return $list;
     }
 
+    public static function del($id){
+        try{
+            self::destroy($id);
+            $arr=['error'=>0,'msg'=>'success'];
+        }catch(\Exception $e){
+            $arr=['error'=>1,'msg'=>'failed','eMsg'=>$e->getMessage()];
+        }
+        return $arr;
+    }
+
 }

@@ -152,7 +152,7 @@
             <td>{{$v['datetime']}}</td>
             <td>
                 <a href="">Update</a>
-                <a href="">Delete</a>
+                <a href="/delete/{{$v['id']}}">Delete</a>
             </td>
         </tr>
         @empty
@@ -180,20 +180,17 @@
         .then(data => {
             console.log(data.message);
 
-            // 找到对应行的元素并更新 UI
             const row = document.querySelector(`tr[data-id="${id}"]`);
             if (row) {
                 const todoCell = row.querySelector('.todo-cell');
                 const checkbox = row.querySelector('.done-checkbox');
 
-                // 更新任务状态（带划线）
                 if (data.done) {
                     todoCell.innerHTML = `<s>${todoCell.textContent}</s>`;
                 } else {
                     todoCell.innerHTML = todoCell.textContent.replace(/<s>|<\/s>/g, '');
                 }
 
-                // 更新复选框状态
                 checkbox.checked = data.done;
             }
         })
@@ -202,8 +199,8 @@
 
     function clearKey() {
         const url = new URL(window.location.href);
-        url.searchParams.delete('key'); // 移除 'key' 参数
-        window.location.href = url.toString(); // 刷新到新的 URL
+        url.searchParams.delete('key'); 
+        window.location.href = url.toString();
     }
     </script>
 </body>

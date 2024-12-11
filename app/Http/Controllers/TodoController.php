@@ -39,6 +39,18 @@ class TodoController extends Controller{
             'message' => 'Todo status updated',
             'done' => $todo->done,
             'id' => $todo->id,
-        ]);    }
+        ]);    
+    }
 
+    public function delete($id)
+    {
+        $result = TodoModel::del($id);
+    
+        if ($result['error'] == 0) {
+            return redirect('/')->with('success', 'Todo item deleted successfully.');
+        } else {
+            return back()->with('error', 'Failed to delete the Todo item.');
+        }
+    }
+    
 }

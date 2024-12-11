@@ -22,3 +22,4 @@ use App\Http\Controllers\TodoController;
 Route::get('/',[TodoController::class,'add']);
 Route::post('/save',[TodoController::class,'save']);
 Route::post('/todo/{id}/toggle', [TodoController::class, 'toggleDone']);
+Route::get('/delete/{id}',[TodoController::class,'delete']);
